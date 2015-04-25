@@ -3,6 +3,9 @@ package chenyibin.leetcode;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Problem #1 on leetcode.com
+ */
 public class TwoSum
 {
     public int[] twoSum(int[] numbers, int target)

@@ -1,5 +1,8 @@
 package chenyibin.leetcode;
 
+/**
+ * Problem #6 on leetcode.com
+ */
 public class ZigZagString {
     
     public String convert(String s, int nRows) {
