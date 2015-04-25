@@ -7,6 +7,31 @@ import java.util.List;
 
 import chenyibin.common.utils.NullOutputStream;
 
+/**
+ * Finds the k-th smallest element in the union of two sorted arrays
+ * The first step here is to realize that the k-th smallest element must
+ * be in the subarray a[0..k] and b[0..k].
+ * 
+ * We then examine the midpoints a[mid_ai] and b[mid_bi] of each of these
+ * subarrays. The larger of these two (let's say it's a[mid_ai]) has either exactly k
+ * or more than k elements smaller than itself so we can't remove the smaller
+ * elements in a[] from our search space.
+ * 
+ * However, for smaller of these two (let's say its b[mid_bi]), the elements in
+ * b[0..mid_bi-1] are guaranteed to not contain the k-th smallest element.
+ * This is because the only candidate numbers that it can have less than itself
+ * are b[0..mid_bi-1] and a[0..mid_ai-1] which don't add up to k numbers.
+ * (there are some considerations for when k is odd vs even)
+ * Those elements can effectively pruned from our search space.
+ * 
+ * In addition there are some early exit conditions that we can consider.
+ * When a[mid_ai] == b[mid_bi] then one of them is the k-th smallest element since
+ * there are exactly k elements smaller or equal to their value.
+ * When k is odd and b[mid_bi] > a[mid_ai] > b[mid_bi-1] then a[mid_ai] is the
+ * k-th smallest element because there are exactly k/2 elements smaller than
+ * b[mid_bi-1] in b[] and k/2 smaller than a[mid_ai] in a[].
+ * Similarly we can justify the other early exit conditions.
+ */
 public class FindKthSmallest
 {
 	MaxiArray a;
@@ -87,29 +112,38 @@ public class FindKthSmallest
 			return get2ndSmallest(ai, bi);
 		}
 	
-		int halfk = (k - 1) / 2;
+		int half_k = (k - 1) / 2;
 		
-		int newai = ai + halfk;
-		int newbi = bi + halfk;
-		int aval = a.get(newai);
-		int bval = b.get(newbi);
+		int mid_ai = ai + half_k;
+		int mid_bi = bi + half_k;
+		int aval = a.get(mid_ai);
+		int bval = b.get(mid_bi);
 		
 		if (aval == bval) {
+			// Early exit condition
 			return aval;
 		} else if (aval < bval) {
+			// Early exit condition
 			if (k % 2 == 0) {
-				if (bval < a.get(newai+1)) return bval;
+				if (bval < a.get(mid_ai+1)) return bval;
+				// if k is even then aval cannot be k-th smallest
+				++mid_ai; 
 			} else {
-				if (aval > b.get(newbi-1)) return aval;
+				if (aval > b.get(mid_bi-1)) return aval;
 			}
-			return getKthSmallestRecursion(newai, bi, k - halfk);
+			// Continue the search
+			return getKthSmallestRecursion(mid_ai, bi, k - half_k);
 		} else {
+			// Early exit condition
 			if (k % 2 == 0) {
-				if (aval < b.get(newbi+1)) return aval;
+				if (aval < b.get(mid_bi+1)) return aval;
+				// if k is even then bval cannot be k-th smallest
+				++mid_bi;
 			} else {
-				if (bval > a.get(newai-1)) return bval;
+				if (bval > a.get(mid_ai-1)) return bval;
 			}
-			return getKthSmallestRecursion(ai, newbi, k - halfk);
+			// Continue the search
+			return getKthSmallestRecursion(ai, mid_bi, k - half_k);
 		}
 	}
 	
@@ -150,9 +184,9 @@ public class FindKthSmallest
 	
 	public static void main(String[] args)
 	{
-		int k = 2;
-		int[] aa = {1};
-		int[] bb = {2,3};
+		int k = 6;
+		int[] aa = {19,20,21,90,100,101,120,140,1110};
+		int[] bb = {2,3,10};
 		FindKthSmallest finder = new FindKthSmallest(aa, bb);
 		finder.setStream(System.out);
 		System.out.println(String.format("The %s-th smallest number is %s", k, finder.getKthSmallest(k)));
