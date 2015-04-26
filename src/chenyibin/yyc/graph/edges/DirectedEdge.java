@@ -1,6 +1,6 @@
-package chenyibin.yyg.graph.edges;
+package chenyibin.yyc.graph.edges;
 
-import chenyibin.yyg.graph.interfaces.IEdge;
+import chenyibin.yyc.graph.interfaces.IEdge;
 
 
 public abstract class DirectedEdge implements IEdge

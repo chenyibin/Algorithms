@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import chenyibin.common.utils.NullOutputStream;
+import chenyibin.yyc.utils.NullOutputStream;
 
 /**
  * Finds the k-th smallest element in the union of two sorted arrays

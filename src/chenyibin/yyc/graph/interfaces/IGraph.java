@@ -1,4 +1,4 @@
-package chenyibin.yyg.graph.interfaces;
+package chenyibin.yyc.graph.interfaces;
 
 import java.util.Collection;
 

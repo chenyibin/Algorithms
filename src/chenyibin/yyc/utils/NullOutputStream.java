@@ -1,4 +1,4 @@
-package chenyibin.common.utils;
+package chenyibin.yyc.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;

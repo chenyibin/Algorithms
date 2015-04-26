@@ -1,4 +1,4 @@
-package chenyibin.yyg.graph;
+package chenyibin.yyc.graph;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -7,9 +7,9 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import chenyibin.yyg.graph.interfaces.IEdge;
-import chenyibin.yyg.graph.interfaces.IEdge.EdgeType;
-import chenyibin.yyg.graph.interfaces.IGraph;
+import chenyibin.yyc.graph.interfaces.IEdge;
+import chenyibin.yyc.graph.interfaces.IGraph;
+import chenyibin.yyc.graph.interfaces.IEdge.EdgeType;
 
 import com.google.common.collect.Maps;
 

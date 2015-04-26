@@ -1,8 +1,8 @@
-package chenyibin.yyg.graph.edges;
+package chenyibin.yyc.graph.edges;
 
 public class IntUndirectedEdge extends UndirectedEdge
 {
-	Integer i;
+	int i;
 	
 	public static class IntegerUndirectedEdgeFactory
 	{
@@ -25,7 +25,7 @@ public class IntUndirectedEdge extends UndirectedEdge
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((i == null) ? 0 : i.hashCode());
+		result = prime * result + i;
 		return result;
 	}
 
@@ -38,14 +38,9 @@ public class IntUndirectedEdge extends UndirectedEdge
 		if (getClass() != obj.getClass())
 			return false;
 		IntUndirectedEdge other = (IntUndirectedEdge) obj;
-		if (i == null) {
-			if (other.i != null)
-				return false;
-		} else if (!i.equals(other.i))
+		if (i != other.i)
 			return false;
 		return true;
 	}
-
-	
 
 }
