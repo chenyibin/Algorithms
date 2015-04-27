@@ -2,6 +2,7 @@ package chenyibin.leetcode;
 
 /**
  * Problem #6 on leetcode.com
+ * @author Yibin Chen
  */
 public class ZigZagString {
     

@@ -31,11 +31,15 @@ import chenyibin.yyc.utils.NullOutputStream;
  * k-th smallest element because there are exactly k/2 elements smaller than
  * b[mid_bi-1] in b[] and k/2 smaller than a[mid_ai] in a[].
  * Similarly we can justify the other early exit conditions.
+ *
+ * @author Yibin Chen
  */
 public class FindKthSmallest
 {
 	MaxiArray a;
 	MaxiArray b;
+	
+	// This is a tricky problem so let's add some debugging capabilities
 	PrintStream debugStream;
 
 	FindKthSmallest(int[] a, int[] b)
@@ -45,6 +49,11 @@ public class FindKthSmallest
 		this.debugStream = new PrintStream(NullOutputStream.getStream());
 	}
 	
+	/**
+	 * The MaxiArray deals with the case where one array is much smaller than
+	 * the other array and we'd like to pretend that the smaller array returns
+	 * infinity when we are accessing an element that is actually out-of-bounds
+	 */
 	public static class MaxiArray
 	{
 		int[] arr;
@@ -61,13 +70,20 @@ public class FindKthSmallest
 			return arr[i];
 		}
 	}
-	public void printStatus(int ai, int bi, int k)
+	
+	/**
+	 * Debug function for printing the status of the search
+	 */
+	private void printStatus(int ai, int bi, int k)
 	{
 		this.debugStream.println(String.format("Step: ai=%s, bi=%s, k=%s", ai, bi, k));
 		this.debugStream.println(arrToString("A", this.a.arr, ai, k));
 		this.debugStream.println(arrToString("B", this.b.arr, bi, k));
 	}
-
+	
+	/**
+	 * Debug function for printing the initial state of the search
+	 */
 	private void printInitialState()
 	{
 		this.debugStream.println("Init Conditions");
@@ -75,6 +91,10 @@ public class FindKthSmallest
 		this.debugStream.println(arrToString("B: ", this.b.arr, 0, this.b.arr.length));
 	}
 	
+	/**
+	 * Set this to System.out so we can see what's going on
+	 * @param s
+	 */
 	public void setStream(PrintStream s)
 	{
 		this.debugStream = s;
@@ -82,19 +102,20 @@ public class FindKthSmallest
 	
 	public int getKthSmallest(int k)
 	{
-		if (k > this.a.arr.length + this.b.arr.length)
-		{
+		if (k < 1) {
+			throw new IllegalArgumentException("k must be greater than 0");
+		}
+		
+		if (k > this.a.arr.length + this.b.arr.length) {
 			throw new IllegalArgumentException("k cannot exceed sum of array sizes");
 		}
 		
 		printInitialState();
 
-		if (this.a.arr.length == 0)
-		{
+		if (this.a.arr.length == 0) {
 			return this.b.get(k);
 		}
-		if (this.b.arr.length == 0)
-		{
+		if (this.b.arr.length == 0) {
 			return this.a.get(k);
 		}
 		
@@ -104,6 +125,15 @@ public class FindKthSmallest
 		return getKthSmallestRecursion(0, 0, k);
 	}
 
+	/**
+	 * This function solves the <i>k-th</i> smallest in two sorted
+	 * arrays problem recursively for k > 1. It doesn't deal properly
+	 * with the case for k = 1 so that needs to be handled separately.
+	 * @param ai
+	 * @param bi
+	 * @param k
+	 * @return
+	 */
 	private int getKthSmallestRecursion(int ai, int bi, int k)
 	{
 		printStatus(ai, bi, k);
@@ -147,6 +177,16 @@ public class FindKthSmallest
 		}
 	}
 	
+	/**
+	 * Being lazy and using a simple sort here since I don't want to deal
+	 * with all the cases for getting the 2nd smallest in a 4-element duke out.
+	 * Note that the MaxiArray is really handy here since sometimes the element
+	 * a[ai+1] or b[ai+1] are out of bounds and the MaxiArray automatically puts
+	 * them out of the running for second by returning Integer.MAX_VALUE.
+	 * @param ai starting index into a[]
+	 * @param bi starting index into b[]
+	 * @return 2nd smallest element from union of subarrays a[ai..end] and b[bi..end]
+	 */
 	private int get2ndSmallest(int ai, int bi)
 	{
 		List<Integer> sortingList = new ArrayList<Integer>();

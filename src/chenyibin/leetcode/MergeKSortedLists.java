@@ -4,13 +4,16 @@ import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
-public class MergeKSortedLists {
-	
-	public static class ListNode {
-		int val;
-		ListNode next;
-		ListNode(int x) { val = x; next = null; }
-	}
+import chenyibin.leetcode.common.ListNode;
+
+/**
+ * Problem #23 from leetcode.com:</br>
+ * Merge k sorted linked lists and return it as one sorted list.
+ * 
+ * @author Yibin Chen
+ */
+public class MergeKSortedLists
+{
 	
 	private static class ListNodeComparator implements Comparator<ListNode>
 	{

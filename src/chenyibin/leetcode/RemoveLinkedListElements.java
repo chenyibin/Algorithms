@@ -1,14 +1,18 @@
 package chenyibin.leetcode;
 
-public class RemoveLinkedListElement {
-    
-    public class ListNode
-    {
-        int val;
-        ListNode next;
-        ListNode(int x) { val = x; }
-    }
-    
+import chenyibin.leetcode.common.ListNode;
+
+/**
+ * Problem #203 from leetcode.com:</br>
+ * Remove all elements from a linked list of integers that have value val.</br>
+ * Example:</br>
+ * Given: 1 -> 2 -> 6 -> 3 -> 4 -> 5 -> 6, val = 6</br>
+ * Return: 1 -> 2 -> 3 -> 4 -> 5</br>
+ * 
+ * @author Yibin Chen
+ */
+public class RemoveLinkedListElements
+{
     public ListNode removeElements(ListNode head, int val)
     {
         ListNode current = head;

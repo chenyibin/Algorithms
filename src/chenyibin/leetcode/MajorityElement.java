@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * Problem #169 on leetcode.com
+ * @author Yibin Chen
  */
 public class MajorityElement {
 	

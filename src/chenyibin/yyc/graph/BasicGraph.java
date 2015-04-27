@@ -5,11 +5,12 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import chenyibin.yyc.graph.interfaces.IEdge;
-import chenyibin.yyc.graph.interfaces.IGraph;
 import chenyibin.yyc.graph.interfaces.IEdge.EdgeType;
+import chenyibin.yyc.graph.interfaces.IGraph;
 
 import com.google.common.collect.Maps;
 
@@ -51,14 +52,13 @@ public class BasicGraph<V, E extends IEdge>
 
 	@Override
 	public boolean containsVertex(V vertex) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.graphTable.containsKey(vertex);
 	}
 
 	@Override
 	public boolean containsEdge(IEdge edge) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.directedEdges.containsKey(edge)
+			|| this.undirectedEdges.containsKey(edge);
 	}
 
 	@Override
@@ -131,14 +131,17 @@ public class BasicGraph<V, E extends IEdge>
 	public boolean addEdge(E edge, V v1, V v2) {
 		validateAddEdgeArgs(edge, v1, v2);
 	
+		if (!containsVertex(v1)) addVertex(v1);
 		if (!containsVertex(v2)) addVertex(v2);
 		
 		if (edge.getType() == EdgeType.DIRECTED) {
 			addDirectionalEdge(edge, v1, v2, Direction.OUTGOING);
 			addDirectionalEdge(edge, v2, v1, Direction.INCOMING);
+			this.directedEdges.put(edge, new ImmutablePair<V,V>(v1, v2));
 		} else {
 			addDirectionalEdge(edge, v1, v2, Direction.INCIDENT);
-			addDirectionalEdge(edge, v2, v1, Direction.INCIDENT);			
+			addDirectionalEdge(edge, v2, v1, Direction.INCIDENT);
+			this.undirectedEdges.put(edge, new ImmutablePair<V,V>(v1,v2));
 		}
 		return true;
 	}
@@ -154,7 +157,6 @@ public class BasicGraph<V, E extends IEdge>
 	
 	private void addDirectionalEdge(E edge, V v1, V v2, Direction direction)
 	{
-		if (!containsVertex(v1)) addVertex(v1);
 		EnumMap<Direction, Map<V,E>> dirMap = graphTable.get(v1);
 
 		Map<V,E> connection = dirMap.get(direction);
@@ -167,7 +169,10 @@ public class BasicGraph<V, E extends IEdge>
 	
 	@Override
 	public boolean removeEdge(IEdge edge) {
-		// TODO Auto-generated method stub
+		if (!containsEdge(edge))
+			return false; // nothing to remove
+			
+		Pair<V,V> endpoints = getEndPoints(edge);
 		return false;
 	}
 
