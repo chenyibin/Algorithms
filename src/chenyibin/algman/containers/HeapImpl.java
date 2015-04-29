@@ -1,16 +1,21 @@
 package chenyibin.algman.containers;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
+
+import chenyibin.algman.exceptions.EmptyHeapException;
 
 public class HeapImpl<T extends Comparable<T>> {
 
 	List<T> items;
+	Comparator<T> compare;
 	
 	public HeapImpl()
 	{
 		items = new ArrayList<T>();
+		this.compare = (o1, o2) -> o1.compareTo(o2);
 	}
 	
 	public HeapImpl(List<T> contents)
@@ -62,6 +67,10 @@ public class HeapImpl<T extends Comparable<T>> {
 		return this.items.size();
 	}
 	
+	/**
+	 * Returns a sorted list of items in the heap
+	 * @return sorted list
+	 */
 	public List<T> heapSort()
 	{
 		List<T> itemsCopy = new ArrayList<T>(this.items);
@@ -119,10 +128,16 @@ public class HeapImpl<T extends Comparable<T>> {
 			bubbleUp(parentIndex);
 		}
 	}
-		
-	private boolean correctParentChild(T parent, T child)
+	
+	/**
+	 * Strangely named function to specify comparator between parent and child.
+	 * @param parent
+	 * @param child
+	 * @return true if parent-child relationship is accurate
+	 */
+	protected boolean correctParentChild(T parent, T child)
 	{
-		return parent.compareTo(child) < 0;
+		return this.compare.compare(parent, child) < 0;
 	}
 	
 	private int getParentIndex(int n)

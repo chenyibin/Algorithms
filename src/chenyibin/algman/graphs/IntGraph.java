@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GraphList
+/**
+ * Graph Implementation as described
+ * in the Algorithm Design Manual by Skiena.
+ * 
+ * @author Yibin Chen
+ */
+public class IntGraph
 {
     List<List<EdgeNode>> edgeNodes;
     int numEdges;
@@ -19,11 +25,18 @@ public class GraphList
             this.to = to;
             this.weight = 0;
         }
-        int to;
+        
+        public EdgeNode(int to, int weight)
+        {
+        	this.to = to;
+        	this.weight = weight;
+		}
+		
+		int to;
         int weight;
     }
     
-    public GraphList(int numNodes, boolean directed)
+    public IntGraph(int numNodes, boolean directed)
     {
         this.numNodes = numNodes;
         this.edgeNodes = new ArrayList<List<EdgeNode>>(numNodes);
@@ -33,7 +46,11 @@ public class GraphList
         this.maxDegree = 0;
     }
     
-    public void insertEdge(int from, int to)
+    public void insertEdge(int from, int to) {
+    	insertEdge(from, to, 0);
+    }
+    
+    public void insertEdge(int from, int to, int weight)
     {
         if (from >= this.numNodes || from < 0) {
             throw new IndexOutOfBoundsException(
@@ -44,14 +61,14 @@ public class GraphList
                     "Node " + to + " doesn't exist");
         }
         
-        insertEdgeInner(from, to);
+        insertEdgeInner(from, to, weight);
         if (!this.isDirected) {
-            insertEdgeInner(to, from);
+            insertEdgeInner(to, from, weight);
         }
         ++numEdges;
     }
     
-    private void insertEdgeInner(int from, int to)
+    private void insertEdgeInner(int from, int to, int weight)
     {
         List<EdgeNode> existingFroms = this.edgeNodes.get(from);
         if (existingFroms == null)
@@ -59,7 +76,7 @@ public class GraphList
             existingFroms = new LinkedList<EdgeNode>();
             this.edgeNodes.add(from, existingFroms);
         }
-        existingFroms.add(new EdgeNode(to));
+        existingFroms.add(new EdgeNode(to, weight));
         
         if (existingFroms.size() > this.maxDegree)
             this.maxDegree = existingFroms.size();

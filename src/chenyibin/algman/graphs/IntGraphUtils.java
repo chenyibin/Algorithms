@@ -1,6 +1,6 @@
 package chenyibin.algman.graphs;
 
-public class GraphListUtils
+public class IntGraphUtils
 {
     public enum VisitState
     {

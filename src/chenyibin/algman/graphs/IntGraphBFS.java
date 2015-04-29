@@ -6,15 +6,15 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-import chenyibin.algman.graphs.GraphList.EdgeNode;
-import chenyibin.algman.graphs.GraphListUtils.VisitState;
+import chenyibin.algman.graphs.IntGraph.EdgeNode;
+import chenyibin.algman.graphs.IntGraphUtils.VisitState;
 
-public class GraphListBFS
+public class IntGraphBFS
 {
-    GraphList graph;
+    IntGraph graph;
     List<VisitState> visitState;
     
-    public GraphListBFS(GraphList graph)
+    public IntGraphBFS(IntGraph graph)
     {
         this.graph = graph;
     }

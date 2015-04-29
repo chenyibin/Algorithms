@@ -1,4 +1,4 @@
-package chenyibin.algman.containers;
+package chenyibin.algman.exceptions;
 
 public class EmptyHeapException extends RuntimeException {
 
