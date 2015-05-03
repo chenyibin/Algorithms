@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Given an array A={a1,a2,…,aN} of N elements, find the maximum possible sum of a
- * <li>Contiguous subarray and,</li>
- * <li>Non-contiguous (not necessarily contiguous) subarray.</li></br>
- * 
+ * <strong>Problem:</strong></br>
+ * Given an array A={a1,a2,…,aN} of N elements,</br>
+ * find the maximum possible sum of a Contiguous subarray</br>
+ * and a Non-contiguous (not necessarily contiguous) subarray.</br>
  * Empty subarrays/subsequences should not be considered.
  * 
  * @author Yibin Chen

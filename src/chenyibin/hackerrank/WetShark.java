@@ -42,8 +42,8 @@ public class WetShark
 	public void setInputFile(File inputFile) {
 		this.inputFile = inputFile;
 	}
-
-	private void readInput()
+	
+	public Scanner createInputScanner()
 	{
 		Scanner scr = null;
 		if (this.getInputFile() == null) {
@@ -56,6 +56,12 @@ public class WetShark
 				System.exit(1);
 			}
 		}
+		return scr;
+	}
+	
+	private void readInput()
+	{
+		Scanner scr = createInputScanner();
 		
 		this.inputLength = scr.nextInt();
 		this.targetSum   = scr.nextInt();
