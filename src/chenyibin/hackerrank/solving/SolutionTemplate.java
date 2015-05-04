@@ -33,8 +33,8 @@ public class SolutionTemplate {
 		return inputFile;
 	}
 
-	public void setInputFile(File inputFile) {
-		this.inputFile = inputFile;
+	public void setInputFile(String inputFile) {
+		this.inputFile = new File(inputFile);
 	}
 
 	private void readInput() {
