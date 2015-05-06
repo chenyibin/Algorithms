@@ -27,6 +27,8 @@ public class ThreeSum
     	if (num.length < 3)
     		return result;
     	
+    	// Since the solution must be sorted we might as well
+    	// sort the input and store the frequency of each number
     	SortedMap<Integer,Integer> input = new TreeMap<Integer,Integer>();
     	
     	for (Integer i : num) {
