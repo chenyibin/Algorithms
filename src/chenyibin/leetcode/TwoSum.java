@@ -9,19 +9,19 @@ import java.util.Map;
  */
 public class TwoSum
 {
-    public int[] twoSum(int[] numbers, int target)
-    {
-        Map<Integer, Integer> toIndex = new HashMap<Integer, Integer>(numbers.length);
-        for (int i = 0; i < numbers.length; ++i) {
-            int current = numbers[i];
-            Integer found = toIndex.get(current);
-            if (found != null) {
-                return new int[] {found + 1, i + 1};
-            }
-            int diff = target - current;
-            toIndex.put(diff, i);
-        }
-        
-        return null;
-    }
+	public int[] twoSum(int[] numbers, int target)
+	{
+		Map<Integer, Integer> toIndex = new HashMap<Integer, Integer>(numbers.length);
+		for (int i = 0; i < numbers.length; ++i) {
+			int current = numbers[i];
+			Integer found = toIndex.get(current);
+			if (found != null) {
+				return new int[] {found + 1, i + 1};
+			}
+			int diff = target - current;
+			toIndex.put(diff, i);
+		}
+
+		return null;
+	}
 }

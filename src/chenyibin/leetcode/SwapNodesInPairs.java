@@ -10,31 +10,31 @@ import chenyibin.leetcode.common.ListNode;
  */
 public class SwapNodesInPairs {
 
-    public ListNode swapPairs(ListNode head)
-    {
-    	if (head == null)
-    		return null;
-    		
-    	ListNode current = head;
-    	head = swap(head);
-    	
-    	while (current != null && current.next != null)
-    	{
-    		current.next = swap(current.next);
-    		current = current.next.next;
-    	}
-    	
-    	return head;
-    }
-    
-    private ListNode swap(ListNode first) {
-    	ListNode second = first.next;
-    	
-    	if (second == null)
-    		return first;
-    	
-    	first.next = second.next;
-    	second.next = first;
-    	return second;
-    }
+	public ListNode swapPairs(ListNode head)
+	{
+		if (head == null)
+			return null;
+
+		ListNode current = head;
+		head = swap(head);
+
+		while (current != null && current.next != null)
+		{
+			current.next = swap(current.next);
+			current = current.next.next;
+		}
+
+		return head;
+	}
+
+	private ListNode swap(ListNode first) {
+		ListNode second = first.next;
+
+		if (second == null)
+			return first;
+
+		first.next = second.next;
+		second.next = first;
+		return second;
+	}
 }

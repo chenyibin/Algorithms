@@ -19,70 +19,70 @@ import java.util.TreeMap;
 public class ThreeSum
 {
 	List<List<Integer>> result;
-	
-    public List<List<Integer>> threeSum(int[] num)
-    {
-        this.result = new LinkedList<List<Integer>>();
 
-    	if (num.length < 3)
-    		return result;
-    	
-    	// Since the solution must be sorted we might as well
-    	// sort the input and store the frequency of each number
-    	SortedMap<Integer,Integer> input = new TreeMap<Integer,Integer>();
-    	
-    	for (Integer i : num) {
-    		Integer already = input.get(i);
-    		if (already == null)
-    			input.put(i, 1);
-    		else
-    			input.put(i, already + 1);
-    	}
-    	
-    	for (Entry<Integer,Integer> oneEntry : input.entrySet())
-    	{
-    		for (Entry<Integer,Integer> twoEntry : input.entrySet())
-    		{
-    			int key1 = oneEntry.getKey();
-    			int key2 = twoEntry.getKey();
-    			if (key2 < key1) {
-    				continue;
-    			}
-    			
-    			boolean key1EqKey2 = (key1 == key2);
-    			if (key1EqKey2 && oneEntry.getValue() < 2) {
-    				continue;
-    			}
-    			
-    			int needed = 0 - key1 - key2;
-    			if (needed < key2) continue;
-    			if (input.containsKey(needed)) {
-    				boolean countAccepted = true;
-    				if (needed == key1) {
-    					if (key1EqKey2) {
-    						countAccepted = oneEntry.getValue() > 2;
-    					} else {
-    						countAccepted = oneEntry.getValue() > 1;
-    					}
-    				} else if (needed == key2) {
-    					countAccepted = twoEntry.getValue() > 1;
-    				}
-    				
-    				if (countAccepted) {
-    					addResult(key1, key2, needed);
-    				}
-    			}
-    		}
-    	}
+	public List<List<Integer>> threeSum(int[] num)
+	{
+		this.result = new LinkedList<List<Integer>>();
 
-        return result;
-    }
+		if (num.length < 3)
+			return result;
+
+		// Since the solution must be sorted we might as well
+		// sort the input and store the frequency of each number
+		SortedMap<Integer,Integer> input = new TreeMap<Integer,Integer>();
+
+		for (Integer i : num) {
+			Integer already = input.get(i);
+			if (already == null)
+				input.put(i, 1);
+			else
+				input.put(i, already + 1);
+		}
+
+		for (Entry<Integer,Integer> oneEntry : input.entrySet())
+		{
+			for (Entry<Integer,Integer> twoEntry : input.entrySet())
+			{
+				int key1 = oneEntry.getKey();
+				int key2 = twoEntry.getKey();
+				if (key2 < key1) {
+					continue;
+				}
+
+				boolean key1EqKey2 = (key1 == key2);
+				if (key1EqKey2 && oneEntry.getValue() < 2) {
+					continue;
+				}
+
+				int needed = 0 - key1 - key2;
+				if (needed < key2) continue;
+				if (input.containsKey(needed)) {
+					boolean countAccepted = true;
+					if (needed == key1) {
+						if (key1EqKey2) {
+							countAccepted = oneEntry.getValue() > 2;
+						} else {
+							countAccepted = oneEntry.getValue() > 1;
+						}
+					} else if (needed == key2) {
+						countAccepted = twoEntry.getValue() > 1;
+					}
+
+					if (countAccepted) {
+						addResult(key1, key2, needed);
+					}
+				}
+			}
+		}
+
+		return result;
+	}
 
 	private void addResult(Integer first, Integer second, Integer third) {
 		List<Integer> triplet = new ArrayList<Integer>(3);
-        triplet.add(first);
-        triplet.add(second);
-        triplet.add(third);
-        result.add(triplet);
+		triplet.add(first);
+		triplet.add(second);
+		triplet.add(third);
+		result.add(triplet);
 	}
 }

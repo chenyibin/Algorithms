@@ -22,39 +22,39 @@ import chenyibin.leetcode.common.ListNode;
  */
 public class RemoveNthFromEndOfList
 {
-    public ListNode removeNthFromEnd(ListNode head, int n)
-    {
-    	if (n < 1) {
-    		throw new IllegalArgumentException("n cannot be smaller than 1");
-    	}
-    	if (head == null) {
-    		return null;
-    	}
-    	
-    	int headStartCounter = 0;
-    	
-    	ListNode remove = null; 
-    	for (ListNode lead = head; lead != null; lead = lead.next)
-    	{
-    		if (headStartCounter < n) {
-    			++headStartCounter;
-    		} else if (remove == null) {
-    			remove = head;
-    		} else {
-    			remove = remove.next;
-    		}
-    	}
-    	
-    	if (headStartCounter < n) {
-    		throw new IllegalArgumentException("n is smaller than size of list");
-    	}
-    	
-    	if (remove == null) {
-    		// case where n is the size of the list
-    		return head.next;
-    	} else {
-    		remove.next = remove.next.next;
-    	}
-    	return head;
-    }
+	public ListNode removeNthFromEnd(ListNode head, int n)
+	{
+		if (n < 1) {
+			throw new IllegalArgumentException("n cannot be smaller than 1");
+		}
+		if (head == null) {
+			return null;
+		}
+
+		int headStartCounter = 0;
+
+		ListNode remove = null; 
+		for (ListNode lead = head; lead != null; lead = lead.next)
+		{
+			if (headStartCounter < n) {
+				++headStartCounter;
+			} else if (remove == null) {
+				remove = head;
+			} else {
+				remove = remove.next;
+			}
+		}
+
+		if (headStartCounter < n) {
+			throw new IllegalArgumentException("n is smaller than size of list");
+		}
+
+		if (remove == null) {
+			// case where n is the size of the list
+			return head.next;
+		} else {
+			remove.next = remove.next.next;
+		}
+		return head;
+	}
 }
