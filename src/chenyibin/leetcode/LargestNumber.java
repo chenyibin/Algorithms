@@ -120,30 +120,31 @@ public class LargestNumber
 			return numCompare;
 		}
 	}
-	
-    public String largestNumber(int[] nums) {
-    	StringBuilder result = new StringBuilder();
-    	
-    	SortedSet<String> largeNumBuilder = this.useBoringSolution ?
-    		new TreeSet<String>(new BoringSetComparator()) :
-    		new TreeSet<String>(new MagicSetComparator());
-    	
-    	for (int i : nums)
-    	{
-    		largeNumBuilder.add(Integer.toString(i));
-    	}
-    	
-    	if (largeNumBuilder.first().equals("0")) {
-    		return "0";
-    	}
-    	
-    	for (String s : largeNumBuilder)
-    	{
-    		result.append(s);
-    	}
-    	
-    	return result.toString();
-    }
+
+	public String largestNumber(int[] nums)
+	{
+		StringBuilder result = new StringBuilder();
+
+		SortedSet<String> largeNumBuilder = this.useBoringSolution ?
+			new TreeSet<String>(new BoringSetComparator()) :
+			new TreeSet<String>(new MagicSetComparator());
+
+		for (int i : nums)
+		{
+			largeNumBuilder.add(Integer.toString(i));
+		}
+
+		if (largeNumBuilder.first().equals("0")) {
+			return "0";
+		}
+
+		for (String s : largeNumBuilder)
+		{
+			result.append(s);
+		}
+
+		return result.toString();
+	}
 
 	public boolean isUseBoringSolution() {
 		return useBoringSolution;

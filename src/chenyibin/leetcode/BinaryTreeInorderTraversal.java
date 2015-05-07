@@ -30,12 +30,12 @@ public class BinaryTreeInorderTraversal
 
 		Deque<TreeNode> traversalStack = new LinkedList<TreeNode>();
 		Deque<TreeNode> postOrderStack = new LinkedList<TreeNode>();
-		
+
 		traversalStack.push(root);
 		while (!traversalStack.isEmpty())
 		{
 			TreeNode current = traversalStack.peek();
-			
+
 			if (current.left == null) {
 				traversalStack.pop();
 				ll.add(current.val);

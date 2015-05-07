@@ -9,29 +9,29 @@ package chenyibin.leetcode;
  */
 public class ContainerWithMostWater {
 
-    public int maxArea(int[] height) {
-        
-        int begin = 0;
-        int end   = height.length - 1;
-        int maxArea = 0;
-        int area    = 0; 
-        while (begin < end) {
-        	int beginHeight = height[begin];
-        	int endHeight   = height[end];
-        	if (beginHeight > endHeight) {
-        		area = endHeight * (end - begin);
-        		// we no longer have to consider containers bound on the
-        		// right by end since every one of them will be smaller
-        		--end; 
-        	} else {
-        		area = beginHeight * (end - begin);
-        		// we no longer have to consider containers bound on the
-        		// left by begin since every one of them will be smaller
-        		++begin;
-        	}
-        	maxArea = Math.max(area, maxArea);
-        }
-        
-        return maxArea;
-    }
+	public int maxArea(int[] height) {
+
+		int begin = 0;
+		int end   = height.length - 1;
+		int maxArea = 0;
+		int area    = 0; 
+		while (begin < end) {
+			int beginHeight = height[begin];
+			int endHeight   = height[end];
+			if (beginHeight > endHeight) {
+				area = endHeight * (end - begin);
+				// we no longer have to consider containers bound on the
+				// right by end since every one of them will be smaller
+				--end; 
+			} else {
+				area = beginHeight * (end - begin);
+				// we no longer have to consider containers bound on the
+				// left by begin since every one of them will be smaller
+				++begin;
+			}
+			maxArea = Math.max(area, maxArea);
+		}
+
+		return maxArea;
+	}
 }

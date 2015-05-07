@@ -76,19 +76,19 @@ public class CombineCombinations
 			return true;
 		}
 	}
-	
-    public List<List<Integer>> combine(int n, int k) {
-    
-        List<List<Integer>> result = new ArrayList<List<Integer>>();
-        if (n < k) {
-        	throw new IllegalArgumentException("n cannot be less than k");
-        }
-        
-        Generator gen = new Generator(n, k);
-        do {
-        	List<Integer> combo = gen.get();
-        	result.add(combo);
-        } while (gen.increment());
-        return result;
-    }
+
+	public List<List<Integer>> combine(int n, int k) {
+
+		List<List<Integer>> result = new ArrayList<List<Integer>>();
+		if (n < k) {
+			throw new IllegalArgumentException("n cannot be less than k");
+		}
+
+		Generator gen = new Generator(n, k);
+		do {
+			List<Integer> combo = gen.get();
+			result.add(combo);
+		} while (gen.increment());
+		return result;
+	}
 }

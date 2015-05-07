@@ -25,7 +25,7 @@ public class InterleavingString
 	String rowStr;
 	String colStr;
 	String target;
-	
+
 	private class PointStack
 	{
 		Deque<Integer> rowStack;
@@ -35,49 +35,49 @@ public class InterleavingString
 			rowStack = new LinkedList<Integer>();
 			colStack = new LinkedList<Integer>();
 		}
-		
+
 		public void push(int row, int col)
 		{
 			rowStack.push(row);
 			colStack.push(col);
 		}
-		
+
 		public void pushDownIfMatch(int row, int col)
 		{
 			++row;
 			if (row > rowStr.length())
 				return;
-				
+
 			if (tracker[row][col] == true)
 				return;
-				
+
 			char c = target.charAt(row + col - 1);
-    		if (c == rowStr.charAt(row - 1)) {
-    			tracker[row][col] = true;
-    			push(row, col);
-    		}
+			if (c == rowStr.charAt(row - 1)) {
+				tracker[row][col] = true;
+				push(row, col);
+			}
 		}
-		
+
 		public void pushRightIfMatch(int row, int col)
 		{
 			++col;
 			if (col > colStr.length())
 				return;
-				
+
 			if (tracker[row][col] == true)
 				return;
-				
+
 			char c = target.charAt(row + col - 1);
-    		if (c == colStr.charAt(col - 1)) {
-    			tracker[row][col] = true;
-    			push(row, col);
-    		}
+			if (c == colStr.charAt(col - 1)) {
+				tracker[row][col] = true;
+				push(row, col);
+			}
 		}
-	
+
 		public Integer peekRow() {
 			return rowStack.peek();
 		}
-	
+
 		public Integer peekCol() {
 			return colStack.peek();
 		}
@@ -86,36 +86,36 @@ public class InterleavingString
 			rowStack.pop();
 			colStack.pop();
 		}
-		
+
 		public boolean isEmpty() {
 			return rowStack.isEmpty();
 		}
 	}
-	
-    public boolean isInterleave(String s1, String s2, String s3)
-    {
-        if (s3.length() != s1.length() + s2.length())
-        	return false;
-        	
-    	this.rowStr = s1;
-    	this.colStr = s2;
-    	this.target = s3;
-    
-        // Java will initialize everything to false
-        tracker = new boolean[rowStr.length() + 1][colStr.length() + 1];
-        
-        PointStack stack = new PointStack();
-        stack.push(0, 0);
-        tracker[0][0] = true;
-        while (!stack.isEmpty())
-        {
-        	int row = stack.peekRow();
-        	int col = stack.peekCol();
-        	stack.pop();
-        	stack.pushRightIfMatch(row, col);
-        	stack.pushDownIfMatch(row, col);
-        }
-        
-        return tracker[this.rowStr.length()][this.colStr.length()];
-    }
+
+	public boolean isInterleave(String s1, String s2, String s3)
+	{
+		if (s3.length() != s1.length() + s2.length())
+			return false;
+
+		this.rowStr = s1;
+		this.colStr = s2;
+		this.target = s3;
+
+		// Java will initialize everything to false
+		tracker = new boolean[rowStr.length() + 1][colStr.length() + 1];
+
+		PointStack stack = new PointStack();
+		stack.push(0, 0);
+		tracker[0][0] = true;
+		while (!stack.isEmpty())
+		{
+			int row = stack.peekRow();
+			int col = stack.peekCol();
+			stack.pop();
+			stack.pushRightIfMatch(row, col);
+			stack.pushDownIfMatch(row, col);
+		}
+
+		return tracker[this.rowStr.length()][this.colStr.length()];
+	}
 }
