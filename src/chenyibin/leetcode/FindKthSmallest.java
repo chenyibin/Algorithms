@@ -8,29 +8,29 @@ import java.util.List;
 import chenyibin.yyc.utils.NullOutputStream;
 
 /**
- * Finds the k-th smallest element in the union of two sorted arrays
- * The first step here is to realize that the k-th smallest element must
- * be in the subarray a[0..k] and b[0..k].
+ * Finds the k-th smallest element in the union of two sorted arrays.</br>
+ * The first step here is to realize that the k-th smallest element must.</br>
+ * be in the subarray a[0..k] and b[0..k]..</br>
  * 
- * We then examine the midpoints a[mid_ai] and b[mid_bi] of each of these
- * subarrays. The larger of these two (let's say it's a[mid_ai]) has either exactly k
- * or more than k elements smaller than itself so we can't remove the smaller
- * elements in a[] from our search space.
- * 
- * However, for smaller of these two (let's say its b[mid_bi]), the elements in
- * b[0..mid_bi-1] are guaranteed to not contain the k-th smallest element.
- * This is because the only candidate numbers that it can have less than itself
- * are b[0..mid_bi-1] and a[0..mid_ai-1] which don't add up to k numbers.
- * (there are some considerations for when k is odd vs even)
- * Those elements can effectively pruned from our search space.
- * 
- * In addition there are some early exit conditions that we can consider.
- * When a[mid_ai] == b[mid_bi] then one of them is the k-th smallest element since
- * there are exactly k elements smaller or equal to their value.
- * When k is odd and b[mid_bi] > a[mid_ai] > b[mid_bi-1] then a[mid_ai] is the
- * k-th smallest element because there are exactly k/2 elements smaller than
- * b[mid_bi-1] in b[] and k/2 smaller than a[mid_ai] in a[].
- * Similarly we can justify the other early exit conditions.
+ * We then examine the midpoints a[mid_ai] and b[mid_bi] of each of these subarrays.</br>
+ * The larger of these two (let's say it's a[mid_ai]) has either exactly k</br>
+ * or more than k elements smaller than itself, so we can't remove the smaller</br>
+ * elements in a[] from our search space.</br>
+ * </br>
+ * However, for smaller of these two (let's say its b[mid_bi]), the elements in</br>
+ * b[0..mid_bi-1] are guaranteed to not contain the k-th smallest element.</br>
+ * This is because the only candidate numbers that it can have less than itself</br>
+ * are b[0..mid_bi-1] and a[0..mid_ai-1] which don't add up to k numbers.</br>
+ * (there are some considerations for when k is odd vs even)</br>
+ * Those elements can effectively pruned from our search space.</br>
+ * </br>
+ * In addition there are some early exit conditions that we can consider.</br>
+ * When a[mid_ai] == b[mid_bi] then one of them is the k-th smallest element since</br>
+ * there are exactly k elements smaller or equal to their value.</br>
+ * When k is odd and b[mid_bi] > a[mid_ai] > b[mid_bi-1] then a[mid_ai] is the</br>
+ * k-th smallest element because there are exactly k/2 elements smaller than</br>
+ * b[mid_bi-1] in b[] and k/2 smaller than a[mid_ai] in a[].</br>
+ * Similarly we can justify the other early exit conditions.</br>
  *
  * @author Yibin Chen
  */
