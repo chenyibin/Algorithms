@@ -120,7 +120,7 @@ public class FindKthSmallest
 		}
 		
 		if (k == 1) {
-			return Math.min(a.get(0), b.get(0));			
+			return Math.min(a.get(0), b.get(0));
 		}
 		return getKthSmallestRecursion(0, 0, k);
 	}
