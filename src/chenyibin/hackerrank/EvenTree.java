@@ -15,25 +15,25 @@ import java.util.Set;
  * You are given a tree (a simple connected graph with no cycles).</br>
  * Remove as many edges from the tree as possible to obtain a forest where</br>
  * each connected component of the forest contains an even number of vertices.</br>
- * 
+ * </br>
  * <strong>Solution:</strong></br>
- * Think of each edge in the tree as connecting two smaller trees.
- * Removing one edge will always result in two smaller trees.
- * If after an edge is removed, the two smaller trees have an even number
- * of nodes, then the condition to our problem is satisfied.
- * 
- * Starting at an arbitrary root node (it doesn't matter which node you pick),
- * we can perform a depth first traversal determine the number of nodes for
- * each sub-tree. If the number of nodes in the sub-tree is even, then it can
- * be cut off from the main tree iff the number of nodes remaining in the main
- * tree is also even. Note that we don't actually have to modify the original
- * tree to determine this property due to even-ness. So building an array
- * containing the number of nodes in each sub-tree is sufficient for figuring
- * out the maximum number of cuts possible.
- * 
- * <strong>Note:</strong> The problem of determining sub-tree size is trivially
- * solved using recursion but we're going to do this thing iteratively as an
- * exercise and because it's slightly more efficient to maintain your own stack.
+ * Think of each edge in the tree as connecting two smaller trees.</br>
+ * Removing one edge will always result in two smaller trees.</br>
+ * If after an edge is removed, the two smaller trees have an even number</br>
+ * of nodes, then the condition to our problem is satisfied.</br>
+ * </br>
+ * Starting at an arbitrary root node (it doesn't matter which node you pick),</br>
+ * we can perform a depth first traversal determine the number of nodes for</br>
+ * each sub-tree. If the number of nodes in the sub-tree is even, then it can</br>
+ * be cut off from the main tree iff the number of nodes remaining in the main</br>
+ * tree is also even. Note that we don't actually have to modify the original</br>
+ * tree to determine this property due to even-ness. So building an array</br>
+ * containing the number of nodes in each sub-tree is sufficient for figuring</br>
+ * out the maximum number of cuts possible.</br>
+ * </br>
+ * <strong>Note:</strong> The problem of determining sub-tree size is trivially</br>
+ * solved using recursion but we're going to do this thing iteratively as an</br>
+ * exercise and because it's slightly more efficient to maintain your own stack.</br>
  * 
  * @author Yibin Chen
  */
