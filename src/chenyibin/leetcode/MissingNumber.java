@@ -11,7 +11,7 @@ public class MissingNumber {
      * The xor operation has the property that (x xor y xor y) = x
      * Create an xor number from all the indices and then re-xor
      * the contents of the array.
-     * This should leave the one number that is missing;
+     * This should leave the one number that is missing
      * @param nums
      * @return
      */
