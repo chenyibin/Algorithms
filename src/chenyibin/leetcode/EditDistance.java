@@ -33,7 +33,7 @@ public class EditDistance {
                 }
                 int distByAdd = dp[row][colMinus] + 1;
                 int distByDel = dp[rowMinus][col] + 1;
-                dp[row][col] = Math.max(distByReplace, Math.max(distByAdd, distByDel));
+                dp[row][col] = Math.min(distByReplace, Math.min(distByAdd, distByDel));
             }
         }
         
