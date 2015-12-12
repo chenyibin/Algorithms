@@ -3,6 +3,14 @@ package chenyibin.leetcode;
 import java.util.Deque;
 import java.util.LinkedList;
 
+/**
+ * Problem #239 on leetcode.com:
+ * Given an array nums, there is a sliding window of size k moving from left to right of the array.
+ * You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+ * Return a list containing the maximum number of each window and at each step.
+ * 
+ * @author Yibin Chen
+ */
 public class SlidingWindowMax
 {
 
@@ -13,24 +21,26 @@ public class SlidingWindowMax
 
         int offset = k - 1;
 
-        Deque<Integer> windowQueue = new LinkedList<Integer>();
+        // Use a double ended queue which maintains ordering
+        // The top of the queue is always the largest element in the queue
+        Deque<Integer> windowDeque = new LinkedList<Integer>();
 
         for (int i = 0; i < nums.length; ++i) {
 
-            if (!windowQueue.isEmpty() && windowQueue.peek() <= i - k) {
-                windowQueue.poll();
+            if (!windowDeque.isEmpty() && windowDeque.peek() <= i - k) {
+                windowDeque.poll();
             }
 
             int currentNum = nums[i];
 
-            while (!windowQueue.isEmpty() && nums[windowQueue.peekLast()] < currentNum) {
-                windowQueue.pollLast();
+            while (!windowDeque.isEmpty() && nums[windowDeque.peekLast()] < currentNum) {
+                windowDeque.pollLast();
             }
             
-            windowQueue.offer(i);
+            windowDeque.offer(i);
             int resultIndex = i - offset;
             if (resultIndex  >= 0) {
-                result[resultIndex] = nums[windowQueue.peek()];
+                result[resultIndex] = nums[windowDeque.peek()];
             }
         }
         return result;
