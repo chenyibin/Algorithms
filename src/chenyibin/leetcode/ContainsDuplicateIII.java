@@ -4,48 +4,38 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-public class ContainsDuplicateIII {
+/**
+ * Given an array of integers, find out whether there are two distinct indices i and j in the array
+ * such that the difference between nums[i] and nums[j] is at most t
+ * and the difference between i and j is at most k. 
+ * 
+ * @author Yibin Chen
+ */
+public class ContainsDuplicateIII
+{
+    // The window contains a tree set of
+    // the last k elements
+    TreeSet<Integer> window = new TreeSet<>();
     
-    TreeSet<NumIndex> window = new TreeSet<>();
-    Deque<NumIndex> indexQ = new LinkedList<>();
+    // The index queue enforces that the window
+    // only contains the last k elements
+    Deque<Integer> indexQ = new LinkedList<>();
     int sumDiff;
     int indexDiff;
     
-    private static class NumIndex implements Comparable<NumIndex>
+    boolean checkWindowHasConstraintSatisfyingEntry(Integer check)
     {
-        public int num;
-        public int index;
-        
-        public NumIndex(int num, int index)
-        {
-            this.num = num;
-            this.index = index;
-        }
-        
-        @Override
-        public int compareTo(NumIndex o) {
-            NumIndex other = (NumIndex) o;
-            
-            if (this.num == other.num) {
-                return Integer.compare(this.index, other.index);
-            }
-            return Integer.compare(this.num, other.num);
-        }
-    }
-    
-    boolean checkWindow(NumIndex check)
-    {
-        NumIndex down = window.lower(check);
+        Integer down = window.floor(check);
         if (down != null)
         {
-            long diff = (long)check.num - down.num;
+            long diff = (long)check  - down;
             if (diff <= sumDiff)
                 return true;
         }
-        NumIndex up = window.higher(check);
+        Integer up = window.ceiling(check);
         if (up != null)
         {
-            long diff = (long)up.num - check.num;
+            long diff = (long)up - check;
             if (diff <= sumDiff)
                 return true;
         }
@@ -58,18 +48,18 @@ public class ContainsDuplicateIII {
         
         for (int i = 0; i < nums.length; ++i)
         {
-            NumIndex newNum = new NumIndex(nums[i], i);
-            this.window.add(newNum);
+            Integer newNum = nums[i];
             if (this.indexQ.size() > this.indexDiff)
             {
-                NumIndex oldNum = this.indexQ.poll();
+                Integer oldNum = this.indexQ.poll();
                 this.window.remove(oldNum);
             }
             this.indexQ.offer(newNum);
-            if (checkWindow(newNum))
+            if (checkWindowHasConstraintSatisfyingEntry(newNum))
             {
                 return true;
             }
+            this.window.add(newNum);
         }
         return false;
     }
