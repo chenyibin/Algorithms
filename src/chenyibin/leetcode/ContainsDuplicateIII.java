@@ -5,7 +5,8 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 
 /**
- * Given an array of integers, find out whether there are two distinct indices i and j in the array
+ * Problem #220 from leetcode.com:
+ * Given an array of integers, find out whether there are two distinct indices i and j
  * such that the difference between nums[i] and nums[j] is at most t
  * and the difference between i and j is at most k. 
  * 
