@@ -1,5 +1,6 @@
 package chenyibin.leetcode;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,10 +19,10 @@ import chenyibin.leetcode.common.TreeNode;
  * 
  * @author Yibin Chen
  */
-public class BinaryTreeInorderTraversal
+public class BinaryTreeInOrderTraversal
 {
 
-	public List<Integer> inorderTraversal(TreeNode root)
+	public List<Integer> inOrderTraversal(TreeNode root)
 	{
 		List<Integer> ll = new LinkedList<Integer>();
 		// Handle null case
@@ -55,5 +56,24 @@ public class BinaryTreeInorderTraversal
 			}
 		}
 		return ll;
+	}
+	
+	public List<Integer> inOrderWithOneStack(TreeNode root)
+	{
+	    List<Integer> result = new ArrayList<>();
+	    
+	    TreeNode current = root;
+	    Deque<TreeNode> traversalStack = new LinkedList<>();
+	    while (current != null || !traversalStack.isEmpty()) {
+	        if (current == null) {
+	            current = traversalStack.pop();
+	            result.add(current.val);
+	            current = current.right;
+	        } else {
+	            traversalStack.push(current);
+	            current = current.left;
+	        }
+	     }
+	     return result;
 	}
 }
