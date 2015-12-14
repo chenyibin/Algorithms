@@ -4,7 +4,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 /**
- * Problem #239 on leetcode.com:
+ * Problem #239 on leetcode.com:</br>
  * Given an array nums, there is a sliding window of size k moving from left to right of the array.
  * You can only see the k numbers in the window. Each time the sliding window moves right by one position.
  * Return a list containing the maximum number of each window and at each step.

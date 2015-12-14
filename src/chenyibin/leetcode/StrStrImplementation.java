@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Problem # on leetcode.com:
+ * Problem #28 on leetcode.com:</br>
+ * 
  * Returns the index of the first occurrence of needle in haystack,</br>
  * or -1 if needle is not part of haystack. </br>
  * 

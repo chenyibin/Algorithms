@@ -1,7 +1,8 @@
 package chenyibin.leetcode;
 
 /**
- * Problem #189 on leetcode.com:
+ * Problem #189 on leetcode.com:</br>
+ * 
  * @author Yibin Chen
  */
 public class RotateArray {
