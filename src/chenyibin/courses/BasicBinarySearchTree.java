@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+/**
+ * @author Yibin Chen
+ */
 public class BasicBinarySearchTree<T extends Comparable<T>>
 {
     BasicTreeNode<T> root;
@@ -22,6 +26,7 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
     {
         if (this.root == null) {
             this.root = createNode(newValue);
+            ++this.size;
             return this.root;
         }
         
@@ -43,7 +48,7 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
                     ++this.size;
                     BasicTreeNode<T> newNode = createNode(newValue);
                     current.setLeftChild(newNode);
-                    updatedHeight(current);
+                    updateHeight(current);
                     current = newNode;
                     done = true;
                 } else {
@@ -55,7 +60,7 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
                     ++this.size;
                     BasicTreeNode<T> newNode = createNode(newValue);
                     current.setRightChild(newNode);
-                    updatedHeight(current);
+                    updateHeight(current);
                     current = newNode;
                     done = true;
                 } else {
@@ -116,14 +121,13 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
         return current;
     }
     
-    private void removeNode(BasicTreeNode<T> node)
+    protected BasicTreeNode<T> removeNode(BasicTreeNode<T> node)
     {
         if (node.getLeftChild() != null && node.getRightChild() != null)
         {
             BasicTreeNode<T> rightMin = getMinValue(node.getRightChild());
             node.setValue(rightMin.getValue());
-            removeNode(rightMin);
-            return;
+            return removeNode(rightMin);
         }
         
         --this.size;
@@ -144,7 +148,8 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
         } else {
             parent.setLeftChild(child);
         }
-        updatedHeight(parent);
+        updateHeight(parent);
+        return parent;
     }
     
     public T getMinValue()
@@ -182,10 +187,16 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
         return node;
     }
     
-    
     public List<T> getInOrderTraversal()
     {
-        List<T> traversal = new ArrayList<>();
+        return getInOrderNodeTraversal().stream()
+            .map(BasicTreeNode::getValue)
+            .collect(Collectors.toList());
+    }
+    
+    List<BasicTreeNode<T>> getInOrderNodeTraversal()
+    {
+        List<BasicTreeNode<T>> traversal = new ArrayList<>();
         BasicTreeNode<T> current = this.root;
         Deque<BasicTreeNode<T>> traversalStack = new LinkedList<>();
         
@@ -193,7 +204,7 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
         {
             if (current == null) {
                 current = traversalStack.pop();
-                traversal.add(current.getValue());
+                traversal.add(current);
                 current = current.getRightChild();
             } else {
                 traversalStack.push(current);
@@ -204,7 +215,7 @@ public class BasicBinarySearchTree<T extends Comparable<T>>
         return traversal;
     }
     
-    private void updatedHeight(BasicTreeNode<T> node)
+    protected void updateHeight(BasicTreeNode<T> node)
     {
         while (node != null) {
             int oldHeight = node.getHeight();

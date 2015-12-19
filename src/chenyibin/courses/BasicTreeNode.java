@@ -1,5 +1,8 @@
 package chenyibin.courses;
 
+/**
+ * @author Yibin Chen
+ */
 public class BasicTreeNode<T extends Comparable<T>> {
 
     private T value;

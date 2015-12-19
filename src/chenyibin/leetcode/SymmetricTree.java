@@ -21,16 +21,23 @@ public class SymmetricTree
             TreeNode left = leftStack.pop();
             TreeNode right = rightStack.pop();
             
-            if (left.val != right.val) {
-                return false;
+            if (left == null || right == null) {
+                if (left != right) {
+                    return false;
+                }
+            } else {
+                if (left.val != right.val) {
+                    return false;
+                }
+
+                leftStack.push(left.left);
+                leftStack.push(left.right);
+                rightStack.push(right.right);
+                rightStack.push(right.left);
             }
-            leftStack.push(left.left);
-            leftStack.push(left.right);
-            rightStack.push(right.right);
-            rightStack.push(right.left);
         }
         
-        return leftStack.size() == 0 && rightStack.size() == 0;
+        return leftStack.size() == rightStack.size();
     }
     
     

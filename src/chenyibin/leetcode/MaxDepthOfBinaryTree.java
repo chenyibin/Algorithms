@@ -9,6 +9,9 @@ public class MaxDepthOfBinaryTree
 {
     public int maxDepth(TreeNode root)
     {
+        if (root == null) {
+            return 0;
+        }
         // traversal queue
         Deque<TreeNode> tq = new LinkedList<>();
 
