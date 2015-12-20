@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Problem #1 on leetcode.com
+ * Problem #1 on leetcode.com:
+ * Given an array of integers, find two numbers such that they add up to a specific target number.
+ * 
  * @author Yibin Chen
  */
 public class TwoSum

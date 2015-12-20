@@ -16,6 +16,10 @@ public class SlidingWindowMax
 
     public int[] maxSlidingWindow(int[] nums, int k)
     {
+        if (nums.length == 0) {
+            return new int[0];
+        }
+        
         int resultSize = nums.length - k + 1;
         int[] result = new int[resultSize];
 
