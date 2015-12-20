@@ -3,7 +3,8 @@ package chenyibin.leetcode;
 import chenyibin.leetcode.common.ListNode;
 
 /**
- * Problem #2 on leetcode.com
+ * Problem #2 on leetcode.com:
+ * 
  * @author Yibin Chen
  */
 public class AddTwoNumbers
