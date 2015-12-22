@@ -9,18 +9,20 @@ import java.util.stream.Collectors;
 
 /**
  * The Misra-Gries algorithm finds the elements in an array whose
- * frequency is greater than numElements / numFrequents if such numbers exist.
+ * frequency is strictly greater than numElements / k if such numbers exist.
  * 
  * @author Yibin Chen
  */
 public class MisraGries
 {
+    private int k;
     private int numFrequents;
     private Map<Integer, Integer> counters;
 
-    public MisraGries(int numFrequents)
+    public MisraGries(int k)
     {
-        this.numFrequents = numFrequents;
+        this.k = k;
+        this.numFrequents = k - 1;
         this.counters = new HashMap<>();
     }
     
@@ -68,7 +70,7 @@ public class MisraGries
             }
         }
         
-        int threshold = nums.length / numFrequents;
+        int threshold = nums.length / k;
         return counters.entrySet().stream()
             .filter((entry) -> entry.getValue() > threshold)
             .map((entry) -> entry.getKey())
