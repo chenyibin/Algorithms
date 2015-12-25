@@ -3,6 +3,12 @@ package chenyibin.leetcode;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Problem #3 on leetcode.com:
+ * Given a string, find the length of the longest substring without repeating characters.
+ * 
+ * @author Yibin Chen
+ */
 public class LongestSubstringNoRepeat {
 
 	public int lengthOfLongestSubstring(String s) {
