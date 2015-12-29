@@ -5,24 +5,25 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Problem #39 on leetcode.com:
+ * Problem #40 on leetcode.com:
  * Given a set of candidate numbers and a target number,
  * find all unique combinations where the candidate numbers sums to T.
- * The same number may be chosen from the candidates an unlimited number of times.
+ * Each candidate may only be used once in the combination. 
+ * 
  * @author Yibin Chen
  */
-public class CombinationSum {
+public class CombinationSumII {
     
     int[] candidates;
     List<List<Integer>> result;
-    
-    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         Arrays.sort(candidates);
         this.candidates = candidates;
         this.result = new ArrayList<>();
         
         List<Integer> current = new ArrayList<>();
-        findCandidates(current, 0, target);
+        findCandidates(current, -1, target);
         
         return this.result;
     }
@@ -35,10 +36,16 @@ public class CombinationSum {
         }
         
         int origSize = current.size();
-        for (int i = lastIndex; i < candidates.length && candidates[i] <= target; ++i) {
+        int prevCandidate = Integer.MIN_VALUE;
+        for (int i = lastIndex + 1; i < candidates.length && candidates[i] <= target; ++i) {
+            int currentCandidate = candidates[i];
+            if (currentCandidate == prevCandidate) {
+                continue;
+            }
             current.add(candidates[i]);
             findCandidates(current, i, target - candidates[i]);
             current.remove(origSize);
+            prevCandidate = currentCandidate;
         }
     }
 }
