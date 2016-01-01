@@ -8,9 +8,8 @@ import chenyibin.leetcode.common.Interval;
 
 /**
  * Problem #57 on leetcode.com:
- * Given a set of sorted non-overlapping intervals, insert a new interval into the intervals.
- * Merge if necessary. 
- * 
+ * Given a set of sorted non-overlapping intervals,
+ * insert a new interval merging if necessary. 
  * @author Yibin Chen
  */
 public class InsertInterval
