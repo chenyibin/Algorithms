@@ -2,7 +2,7 @@ package chenyibin.leetcode.medium;
 
 /**
  * Problem #260 on leetcode.com:
- * Given an array of numbers nums, in which exactly two elements
+ * Given an array of numbers, in which exactly two elements
  * appear only once and all the other elements appear exactly twice.
  * Find the two elements that appear only once. 
  * @author Yibin Chen
