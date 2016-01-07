@@ -1,4 +1,4 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.medium;
 
 import chenyibin.leetcode.common.ListNode;
 
@@ -37,7 +37,8 @@ public class AddTwoNumbers
 				nextResultNode = new ListNode(carry);
 				carry = 0;
 			}
-
+			
+			// let l2 become null first
 			if (l1 == null) {
 				l1 = l2;
 				l2 = null;

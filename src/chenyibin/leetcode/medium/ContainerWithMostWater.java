@@ -1,10 +1,10 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.medium;
 
 /**
  * Problem #11 from leetcode.com:</br>
- * Given n non-negative integers a1, a2, ..., an, where each ai represents</br>
- * the height of a line at position x=i, find the pair of lines such that</br>
- * the are of the container they form holds the most water.
+ * Given n non-negative integers a1, a2, ..., an, where each ai represents
+ * the height of a line at position x=i, find the pair of lines such that
+ * the container they form holds the most water.
  * @author Yibin Chen
  */
 public class ContainerWithMostWater {

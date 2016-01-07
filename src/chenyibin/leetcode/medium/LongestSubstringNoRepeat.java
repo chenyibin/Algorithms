@@ -1,4 +1,4 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.medium;
 
 import java.util.HashMap;
 import java.util.Map;

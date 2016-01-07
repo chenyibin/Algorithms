@@ -1,10 +1,11 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.easy;
 
 /**
- * Problem #6 on leetcode.com
+ * Problem #6 on leetcode.com:
+ * Read a string that is written in a zipzag pattern line by line.
  * @author Yibin Chen
  */
-public class ZigZagString {
+public class ZigZagConversion {
 
 	public String convert(String s, int nRows) {
 		if (nRows == 1) return s;
