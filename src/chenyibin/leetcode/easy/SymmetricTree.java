@@ -1,9 +1,14 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.easy;
 
 import java.util.Stack;
 
 import chenyibin.leetcode.common.TreeNode;
 
+/**
+ * Problem #101 on leetcode.com:
+ * Given a binary tree, check whether it is a mirror if itself.
+ * @author Yibin Chen
+ */
 public class SymmetricTree
 {
     public boolean isSymmetric(TreeNode root)
