@@ -5,6 +5,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import chenyibin.leetcode.hard.WordSearchII;
+
 public class TestWordSearchII {
     
     @Test

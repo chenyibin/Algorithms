@@ -1,4 +1,4 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.hard;
 
 public class BestTimetoBuyAndSellStockIII {
 

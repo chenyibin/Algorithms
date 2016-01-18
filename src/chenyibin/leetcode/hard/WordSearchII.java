@@ -1,4 +1,4 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.hard;
 
 import java.util.ArrayList;
 import java.util.HashSet;
