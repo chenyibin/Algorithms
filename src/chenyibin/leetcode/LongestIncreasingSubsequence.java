@@ -1,46 +1,42 @@
 package chenyibin.leetcode;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Problem #300 from leetcode.com:
+ * Given an unsorted array of integers,
+ * find the length of longest increasing subsequence.
+ * 
+ * @author Yibin Chen
+ */
 public class LongestIncreasingSubsequence {
 
     public int lengthOfLIS(int[] nums)
     {
-        List<List<Integer>> sequenceTable = new ArrayList<>();
-        for (int num : nums) {
-            if (sequenceTable.isEmpty()) {
-                sequenceTable.add(new LinkedList<>());
-                sequenceTable.get(0).add(num);
+        if (nums.length == 0) {
+            return 0;
+        }
+        List<Integer> bestSequence = new ArrayList<>();
+        bestSequence.add(nums[0]);
+
+        for (int i = 1; i < nums.length; ++i)
+        {
+            int newCard = nums[i];
+            int leftmostGreaterPile = bestSequence.size() - 1;
+            if (bestSequence.get(leftmostGreaterPile) < newCard) {
+                bestSequence.add(newCard);
                 continue;
             }
-            
-            boolean isSmallest = true;
-            for (int i = sequenceTable.size() - 1; i >= 0; --i) {
-                List<Integer> sequence = sequenceTable.get(i);
-                if (sequence.get(0) < num) {
-                    isSmallest = false;
-                    List<Integer> copy = new LinkedList<>();
-                    copy.add(num);
-                    copy.addAll(sequence);
-                    
-                    int plus = i + 1;
-                    if (plus == sequenceTable.size()) {
-                        sequenceTable.add(copy);
-                    } else {
-                        sequenceTable.set(plus, copy);
-                    }
-                }
+            --leftmostGreaterPile;
+            while (leftmostGreaterPile >= 0
+             && bestSequence.get(leftmostGreaterPile) >= newCard)
+            {
+                --leftmostGreaterPile;
             }
-            
-            if (isSmallest) {
-                sequenceTable.get(0).set(0, num);
-            }
-
+            bestSequence.set(++leftmostGreaterPile, newCard);
         }
         
-        List<Integer> longestSeq = sequenceTable.get(sequenceTable.size() - 1);
-        return longestSeq.size();
+        return bestSequence.size();
     }
 }
