@@ -12,45 +12,55 @@ import chenyibin.leetcode.common.ListNode;
  */
 public class AddTwoNumbers
 {
-	public ListNode addTwoNumbers(ListNode l1, ListNode l2)
-	{
-		ListNode result = null;
-		ListNode currentResultNode = null;
-		int carry = 0;
-		do {
-			// calculate new value
-			ListNode nextResultNode = null;
-			if (l2 != null) {
-				int sum = l1.val + l2.val + carry;
-				l2 = l2.next;
-				l1 = l1.next;
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2)
+    {
+        ListNode result = null;
+        ListNode currentResultNode = null;
+        int carry = 0;
+        do {
+            // calculate new value
+            ListNode nextResultNode = null;
+            if (l2 != null) {
+                int sum = l1.val + l2.val + carry;
+                l2 = l2.next;
+                l1 = l1.next;
 
-				nextResultNode = new ListNode(sum % 10);
-				carry = sum / 10;
-			} else if (l1 != null) {
-				int sum = l1.val + carry;
-				l1 = l1.next;
+                if (sum >= 10) {
+                    carry = 1;
+                    nextResultNode = new ListNode(sum - 10);
+                } else {
+                    carry = 0;
+                    nextResultNode = new ListNode(sum);
+                }
+            } else if (l1 != null) {
+                int sum = l1.val + carry;
+                l1 = l1.next;
 
-				nextResultNode = new ListNode(sum % 10);
-				carry = sum / 10;
-			} else {
-				nextResultNode = new ListNode(carry);
-				carry = 0;
-			}
-			
-			// let l2 become null first
-			if (l1 == null) {
-				l1 = l2;
-				l2 = null;
-			}
+                if (sum >= 10) {
+                    carry = 1;
+                    nextResultNode = new ListNode(sum - 10);
+                } else {
+                    carry = 0;
+                    nextResultNode = new ListNode(sum);
+                }
+            } else {
+                nextResultNode = new ListNode(carry);
+                carry = 0;
+            }
 
-			if (result == null) {
-				result = nextResultNode;
-			} else {
-				currentResultNode.next = nextResultNode;
-			}
-			currentResultNode = nextResultNode;
-		} while (l1 != null || carry != 0);
-		return result;
-	}
+            // let l2 become null first
+            if (l1 == null) {
+                l1 = l2;
+                l2 = null;
+            }
+
+            if (result == null) {
+                result = nextResultNode;
+            } else {
+                currentResultNode.next = nextResultNode;
+            }
+            currentResultNode = nextResultNode;
+        } while (l1 != null || carry != 0);
+        return result;
+    }
 }
