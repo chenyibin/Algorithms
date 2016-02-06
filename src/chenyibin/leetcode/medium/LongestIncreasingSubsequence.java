@@ -1,4 +1,4 @@
-package chenyibin.leetcode;
+package chenyibin.leetcode.medium;
 
 import java.util.ArrayList;
 import java.util.List;
