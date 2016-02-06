@@ -9,7 +9,7 @@ import java.util.Stack;
 /**
  * @author Yibin Chen
  */
-public class SuffixTree
+public class SuffixTreeLookupBuffer
 {
     private static int INFINITY = Integer.MAX_VALUE;
     private SuffixNode root;
@@ -17,6 +17,8 @@ public class SuffixTree
     // Buffers
     private byte[] buffer;
     private SuffixNode[] leafs;
+    
+    private int leafCounter; // used in assertion for debug only
 
     private int currentPosition;
     private int bufferSize;
@@ -29,6 +31,9 @@ public class SuffixTree
     private int activeEdgePosition;
     private int activeLength;
 
+    // Suffix Link Memory
+    SuffixNode lastSuffixNode;
+    
     private class SuffixNode
     {
         int startPosition;
@@ -43,14 +48,13 @@ public class SuffixTree
         SuffixNode(int start, int end)
         {
             this.startPosition = start;
-            this.suffixPosition = start;
             this.endPosition = end;
             this.next = new HashMap<>();
             this.parent = null;
         }
 
         int edgeLength() {
-            return Math.min(endPosition, SuffixTree.this.currentPosition + 1) - startPosition;
+            return Math.min(endPosition, SuffixTreeLookupBuffer.this.currentPosition + 1) - startPosition;
         }
 
         @Override
@@ -73,11 +77,8 @@ public class SuffixTree
 
             builder.append(":edge=");
             boolean first = true;
-            for (int pos = startPosition; pos < endPosition; ++pos)
+            for (int pos = startPosition; pos < endPosition && pos <= currentPosition; ++pos)
             {
-                if (!isPositionInBuffer(pos)) {
-                    break;
-                }
                 if (first) first = false;
                 else builder.append('_');
                 builder.append(retrieveFromBuffer(pos));
@@ -124,7 +125,7 @@ public class SuffixTree
     /**
      * @param bufferLength
      */
-    public SuffixTree(int bufferLength)
+    public SuffixTreeLookupBuffer(int bufferLength)
     {
         this.root = new SuffixNode(-1, INFINITY);
 
@@ -144,12 +145,12 @@ public class SuffixTree
 
     private byte retrieveFromBuffer(int position)
     {
-        return buffer[position];
+        return buffer[position % buffer.length];
     }
 
     private boolean isPositionInBuffer(int position)
     {
-        return (position >= 0) && (position < buffer.length);
+        return (position >= bufferStart) && (position <= currentPosition);
     }
 
     /**
@@ -159,20 +160,23 @@ public class SuffixTree
     {
         if (bufferSize == buffer.length) {
             deletedLongestSuffix();
+            bufferStart = (bufferStart + 1) % buffer.length;
         } else {
             ++bufferSize;
         }
-        currentPosition = (currentPosition + 1) % buffer.length;
-        buffer[currentPosition] = newByte;
+        ++currentPosition;
+        buffer[currentPosition % buffer.length] = newByte;
 
+        ++remainingSuffixes;
         updateTree();
+        
+        print(System.out);
     }
 
     private void updateTree()
     {
         byte currentByte = retrieveFromBuffer(currentPosition);
-        ++remainingSuffixes;
-        SuffixNode lastSuffixNode = null;
+        lastSuffixNode = null;
         while (this.remainingSuffixes > 0)
         {
             if (activeLength == 0) {
@@ -182,9 +186,10 @@ public class SuffixTree
             SuffixNode activeNext = activeNode.next.get(activeEdgeByte);
             if (activeNext == null)
             {
-                SuffixNode leafNode = createLeaf(currentPosition);
+                --remainingSuffixes;
+                SuffixNode leafNode = createLeaf(currentPosition, currentPosition - remainingSuffixes);
                 putChild(activeNode, activeEdgeByte, leafNode);
-                lastSuffixNode = updateLastSuffixLink(lastSuffixNode, activeNode);
+                updateLastSuffixLink(activeNode);
             }
             else
             {
@@ -196,7 +201,7 @@ public class SuffixTree
                 if (activePositionByte == currentByte)
                 {
                     ++activeLength;
-                    lastSuffixNode = updateLastSuffixLink(lastSuffixNode, activeNode);
+                    updateLastSuffixLink(activeNode);
                     break;
                 }
 
@@ -205,7 +210,8 @@ public class SuffixTree
                 SuffixNode splitNode = new SuffixNode(activeNext.startPosition, activePosition);
                 putChild(activeNode, activeEdgeByte, splitNode);
 
-                SuffixNode newLeaf = createLeaf(currentPosition);
+                --remainingSuffixes;
+                SuffixNode newLeaf = createLeaf(currentPosition, currentPosition - remainingSuffixes);
                 putChild(splitNode, currentByte, newLeaf);
 
                 activeNext.startPosition += activeLength;
@@ -213,52 +219,55 @@ public class SuffixTree
 
                 putChild(splitNode, splitToActiveNext, activeNext);
 
-                lastSuffixNode = updateLastSuffixLink(lastSuffixNode, splitNode);
+                updateLastSuffixLink(splitNode);
             }
 
-            --remainingSuffixes;
+            followSuffixLink();
+        }
+    }
 
-            if (activeNode == root && activeLength > 0)
-            {
-                // active edge must be first character of next suffix to be inserted
-                activeEdgePosition = currentPosition - remainingSuffixes + 1;
-                // next suffix is current suffix without first character
-                // so decrement active length by 1
-                --activeLength;
-            }
-            else if (activeNode.suffixLink == null)
-            {
-                activeNode = root;
-            }
-            else
-            {
-                // suffixNode pointed to by suffixLink represents the same suffix
-                // as the current node minus the first character
-                activeNode = activeNode.suffixLink;
-            }
+    private void followSuffixLink()
+    {
+        if (activeNode == root && activeLength > 0)
+        {
+            // active edge must be first character of next suffix to be inserted
+            activeEdgePosition = currentPosition - remainingSuffixes + 1;
+            // next suffix is current suffix without first character
+            // so decrement active length by 1
+            --activeLength;
+        }
+        else if (activeNode.suffixLink == null)
+        {
+            activeNode = root;
+        }
+        else
+        {
+            // suffixNode pointed to by suffixLink represents the same suffix
+            // as the current node minus the first character
+            activeNode = activeNode.suffixLink;
         }
     }
     
-    private SuffixNode createLeaf(int startPosition)
+    private SuffixNode createLeaf(int startPosition, int suffixPosition)
     {
         SuffixNode leaf = new SuffixNode(startPosition, INFINITY);
-        int leafIndex = startPosition % this.leafs.length;
+        leaf.suffixPosition = suffixPosition;
+        assert (leaf.suffixPosition == leafCounter);
+        ++leafCounter;
+
+        int leafIndex = leaf.suffixPosition % this.leafs.length;
         this.leafs[leafIndex] = leaf;
         return leaf;
     }
 
-    private SuffixNode updateLastSuffixLink(SuffixNode lastSuffixNode,
-        SuffixNode nextSuffixNode)
+    private void updateLastSuffixLink(SuffixNode nextSuffixNode)
     {
         if (lastSuffixNode != null)
         {
             lastSuffixNode.suffixLink = nextSuffixNode;
-            if (nextSuffixNode == root) {
-                return null;
-            }
         }
 
-        return nextSuffixNode;
+        lastSuffixNode = nextSuffixNode;
     }
 
     public void deletedLongestSuffix()
@@ -266,30 +275,45 @@ public class SuffixTree
         canonize();
         SuffixNode leaf = this.leafs[bufferStart];
         this.leafs[bufferStart] = null;
-        
-        SuffixNode parent = leaf.parent;
-        if (parent == activeNode)
-        {
-        }
-        else
-        {
-            byte leafEdge = retrieveFromBuffer(leaf.startPosition);
-            parent.next.remove(leafEdge);
-            if (parent != root && parent.next.size() == 1)
-            {
-                // If only one child remains in parent and it's not the root
-                // we need to remove the parent to maintain the path compression property
-                SuffixNode ancestor = parent.parent;
-                SuffixNode otherNode = parent.next.entrySet().iterator().next().getValue();
-                byte parentEdge = retrieveFromBuffer(parent.startPosition);
-                otherNode.startPosition = otherNode.startPosition - parent.edgeLength();
-                ancestor.next.put(parentEdge, otherNode);
+        byte leafEdgeByte = retrieveFromBuffer(leaf.startPosition);
 
-                assert retrieveFromBuffer(otherNode.startPosition) == parentEdge;
+        SuffixNode parent = leaf.parent;
+        parent.next.remove(leafEdgeByte);
+
+        if (parent == activeNode && activeLength > 0)
+        {
+            byte activeEdgeByte = retrieveFromBuffer(activeEdgePosition);
+            if (leafEdgeByte == activeEdgeByte)
+            {
+                // If the active point is on the leaf edge we are removing
+                // create a 'trimmed' leaf in its place with the correct starting position.
+                --remainingSuffixes;
+                SuffixNode newLeaf = createLeaf(activeEdgePosition, currentPosition - remainingSuffixes);
+                putChild(parent, leafEdgeByte, newLeaf);
+                followSuffixLink();
+                return;
             }
         }
 
-        bufferStart = (bufferStart + 1) % buffer.length;
+        if (parent != root && parent.next.size() == 1)
+        {
+            // If only one child remains in parent and it's not the root
+            // we need to remove the parent to maintain the path compression property
+            SuffixNode ancestor = parent.parent;
+            SuffixNode otherNode = parent.next.entrySet().iterator().next().getValue();
+            int parentEdgeLength = parent.edgeLength();
+            byte parentEdgeByte = retrieveFromBuffer(parent.startPosition);
+            otherNode.startPosition = otherNode.startPosition - parentEdgeLength;
+            ancestor.next.put(parentEdgeByte, otherNode);
+
+            assert retrieveFromBuffer(otherNode.startPosition) == parentEdgeByte;
+
+            if (parent == activeNode) {
+                activeNode = ancestor;
+                activeEdgePosition = otherNode.startPosition;
+                activeLength += parentEdgeLength;
+            }
+        }
     }
 
     /**
@@ -359,8 +383,12 @@ public class SuffixTree
 
     private void canonize()
     {
+
         SuffixNode activeNext = null;
         do {
+            if (activeLength == 0) {
+                return;
+            }
             byte activeEdgeByte = retrieveFromBuffer(activeEdgePosition);
             activeNext = activeNode.next.get(activeEdgeByte);
         } while (walkDown(activeNext));
@@ -380,6 +408,10 @@ public class SuffixTree
     public void print(PrintStream out)
     {
         out.println(bufferToNumericString());
+        out.println(" Active Point: " + activeNode.toString());
+        out.println(" Active Edge: " + activeEdgePosition);
+        out.println(" Active Length: " + activeLength);
+        out.println(" Remaining: " + remainingSuffixes);
         Stack<SuffixNode> traversalStack = new Stack<>();
         traversalStack.push(root);
         while (!traversalStack.isEmpty())
@@ -388,6 +420,7 @@ public class SuffixTree
             out.print(current.detailedString());
             traversalStack.addAll(current.next.values());
         }
+        System.out.println();
     }
 
     /**
