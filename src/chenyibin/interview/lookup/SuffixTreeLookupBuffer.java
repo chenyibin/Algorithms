@@ -1,4 +1,4 @@
-package chenyibin.interview.suffixtree;
+package chenyibin.interview.lookup;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -7,23 +7,32 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 /**
+ * Suffix Tree Sliding Window implementation based on
+ * Ukkonen's algorithm description found on
+ * <a href="http://stackoverflow.com/questions/9452701/ukkonens-suffix-tree-algorithm-in-plain-english">
+ * stackoverflow</a> and publications by <a href="http://www.itu.dk/people/jesl/">N. Jesper Larsson</a>.
+ * Most of the naming conventions such as active point, active node,
+ * active edge, active length, canonize, etc. originate from those sources.
+ *
  * @author Yibin Chen
  */
-public class SuffixTreeLookupBuffer
+public class SuffixTreeLookupBuffer implements LookupBuffer
 {
     private static int INFINITY = Integer.MAX_VALUE;
+
     private SuffixNode root;
-    
-    // Buffers
+
     private byte[] buffer;
+
+    // Required for O(1) access to leaf nodes during longest suffix deletion
     private SuffixNode[] leafs;
-    
-    private int leafCounter; // used in assertion for debug only
+    // How many leaf nodes we've created so far
+    private int leafCounter;
 
     private int currentPosition;
     private int bufferSize;
     private int bufferStart;
-        
+
     private int remainingSuffixes;
 
     // Active Point
@@ -32,8 +41,8 @@ public class SuffixTreeLookupBuffer
     private int activeLength;
 
     // Suffix Link Memory
-    SuffixNode lastSuffixNode;
-    
+    private SuffixNode lastSuffixNode;
+
     private class SuffixNode
     {
         int startPosition;
@@ -99,7 +108,7 @@ public class SuffixTreeLookupBuffer
             } else {
                 builder.append("Node (len=" + edgeLength() +"): " + toString() + '\n');
             }
-            
+
             boolean first = true;
             for (Entry<Byte, SuffixNode> child : next.entrySet())
             {
@@ -110,7 +119,7 @@ public class SuffixTreeLookupBuffer
                     + "->" + child.getValue().toString());
             }
             if (next.isEmpty()) {
-                builder.append(" Children: none");
+                builder.append(" Leaf");
             }
             builder.append('\n');
             if (suffixLink != null)
@@ -130,7 +139,9 @@ public class SuffixTreeLookupBuffer
         this.root = new SuffixNode(-1, INFINITY);
 
         this.buffer = new byte[bufferLength];
+
         this.leafs = new SuffixNode[bufferLength];
+        this.leafCounter = 0;
 
         this.currentPosition = -1;
         this.bufferSize = 0;
@@ -141,6 +152,8 @@ public class SuffixTreeLookupBuffer
         this.activeNode = this.root;
         this.activeEdgePosition = 0;
         this.activeLength = 0;
+
+        this.lastSuffixNode = null;
     }
 
     private byte retrieveFromBuffer(int position)
@@ -169,14 +182,12 @@ public class SuffixTreeLookupBuffer
 
         ++remainingSuffixes;
         updateTree();
-        
-        print(System.out);
     }
 
     private void updateTree()
     {
-        byte currentByte = retrieveFromBuffer(currentPosition);
         lastSuffixNode = null;
+        byte currentByte = retrieveFromBuffer(currentPosition);
         while (this.remainingSuffixes > 0)
         {
             if (activeLength == 0) {
@@ -193,7 +204,7 @@ public class SuffixTreeLookupBuffer
             }
             else
             {
-                if (walkDown(activeNext)) {
+                if (activeWalkDown(activeNext)) {
                     continue;
                 }
                 int activePosition = activeNext.startPosition + activeLength;
@@ -247,12 +258,12 @@ public class SuffixTreeLookupBuffer
             activeNode = activeNode.suffixLink;
         }
     }
-    
+
     private SuffixNode createLeaf(int startPosition, int suffixPosition)
     {
         SuffixNode leaf = new SuffixNode(startPosition, INFINITY);
         leaf.suffixPosition = suffixPosition;
-        assert (leaf.suffixPosition == leafCounter);
+        assert leaf.suffixPosition == leafCounter;
         ++leafCounter;
 
         int leafIndex = leaf.suffixPosition % this.leafs.length;
@@ -270,9 +281,9 @@ public class SuffixTreeLookupBuffer
         lastSuffixNode = nextSuffixNode;
     }
 
-    public void deletedLongestSuffix()
+    private void deletedLongestSuffix()
     {
-        canonize();
+        canonizeActivePoint();
         SuffixNode leaf = this.leafs[bufferStart];
         this.leafs[bufferStart] = null;
         byte leafEdgeByte = retrieveFromBuffer(leaf.startPosition);
@@ -290,6 +301,7 @@ public class SuffixTreeLookupBuffer
                 --remainingSuffixes;
                 SuffixNode newLeaf = createLeaf(activeEdgePosition, currentPosition - remainingSuffixes);
                 putChild(parent, leafEdgeByte, newLeaf);
+                updateAncestralPositioning(newLeaf);
                 followSuffixLink();
                 return;
             }
@@ -300,13 +312,19 @@ public class SuffixTreeLookupBuffer
             // If only one child remains in parent and it's not the root
             // we need to remove the parent to maintain the path compression property
             SuffixNode ancestor = parent.parent;
-            SuffixNode otherNode = parent.next.entrySet().iterator().next().getValue();
+
+            // Last node standing needs to be attached to ancestor
+            SuffixNode otherNode = parent.next.values().iterator().next();
             int parentEdgeLength = parent.edgeLength();
             byte parentEdgeByte = retrieveFromBuffer(parent.startPosition);
-            otherNode.startPosition = otherNode.startPosition - parentEdgeLength;
-            ancestor.next.put(parentEdgeByte, otherNode);
 
+            // Since startPosition is the position of the incoming edge
+            // we need to update startPosition to be outgoing from the ancestor
+            otherNode.startPosition = otherNode.startPosition - parentEdgeLength;
+            putChild(ancestor, parentEdgeByte, otherNode);
             assert retrieveFromBuffer(otherNode.startPosition) == parentEdgeByte;
+
+            updateAncestralPositioning(otherNode);
 
             if (parent == activeNode) {
                 activeNode = ancestor;
@@ -317,35 +335,57 @@ public class SuffixTreeLookupBuffer
     }
 
     /**
-     * @param search
-     * @return
-     * <li>Return pair of match position and match length given search array.</li>
-     * <li>Return null if no match was found</li>
+     * @param node
      */
+    private void updateAncestralPositioning(SuffixNode node)
+    {
+        SuffixNode parent = node.parent;
+        while (parent != root)
+        {
+            int parentLength = parent.edgeLength();
+            parent.startPosition = node.startPosition - parentLength;
+            parent.endPosition = parent.startPosition + parentLength;
+            assert parent.startPosition > 0;
+            node = parent;
+            parent = parent.parent;
+        }
+    }
+
+    @Override
     public int[] findLongestMatch(byte[] search)
     {
-        SuffixNode current = root;
+        return findLongestMatch(search, 0, search.length);
+    }
+
+    @Override
+    public int[] findLongestMatch(byte[] lookup, int start, int length)
+    {
+        SuffixNode currentNode = root;
 
         int matchPosition = -1;
         int lastEdgePosition = -1;
 
         int matched = 0;
-        for (;matched < search.length; ++matched)
+        int pos = start;
+        for (int i = 0; i < length; ++i)
         {
-            byte searchByte = search[matched];
+            byte searchByte = lookup[pos];
 
             if (matchPosition >= lastEdgePosition)
             {
-                SuffixNode node = current.next.get(searchByte);
+                // we reached the end of our current node
+                // so we need to get the next one
+                SuffixNode node = currentNode.next.get(searchByte);
                 if (node == null) {
                     break;
                 }
                 matchPosition = node.startPosition;
                 lastEdgePosition = matchPosition + node.edgeLength() - 1;
-                current = node;
+                currentNode = node;
             }
             else
             {
+                // advance from last matched position
                 int checkPosition = matchPosition + 1;
                 if (!isPositionInBuffer(checkPosition)) {
                     break;
@@ -356,15 +396,18 @@ public class SuffixTreeLookupBuffer
                 }
                 matchPosition = checkPosition;
             }
+            pos = (pos + 1) % lookup.length;
+            ++matched;
         }
 
         if (matchPosition < 0) {
             return null;
         }
-        return new int[] {matchPosition - matched + 1, matched};
+        int offset = currentPosition - matchPosition + matched;
+        return new int[] {offset, matched};
     }
 
-    private boolean walkDown(SuffixNode activeNext)
+    private boolean activeWalkDown(SuffixNode activeNext)
     {
         if (activeNext.endPosition == INFINITY) {
             return false;
@@ -381,9 +424,8 @@ public class SuffixTreeLookupBuffer
         return false;
     }
 
-    private void canonize()
+    private void canonizeActivePoint()
     {
-
         SuffixNode activeNext = null;
         do {
             if (activeLength == 0) {
@@ -391,7 +433,7 @@ public class SuffixTreeLookupBuffer
             }
             byte activeEdgeByte = retrieveFromBuffer(activeEdgePosition);
             activeNext = activeNode.next.get(activeEdgeByte);
-        } while (walkDown(activeNext));
+        } while (activeWalkDown(activeNext));
     }
 
 
@@ -402,10 +444,10 @@ public class SuffixTreeLookupBuffer
     }
 
     /**
-     * For Debug
+     * For Test and Debug
      * @param out
      */
-    public void print(PrintStream out)
+    void print(PrintStream out)
     {
         out.println(bufferToNumericString());
         out.println(" Active Point: " + activeNode.toString());
@@ -424,10 +466,10 @@ public class SuffixTreeLookupBuffer
     }
 
     /**
-     * For Debug
+     * For Test and Debug
      * @return
      */
-    public String bufferToNumericString()
+    String bufferToNumericString()
     {
         StringBuilder builder = new StringBuilder();
         builder.append("BUFFER: ");
@@ -439,5 +481,13 @@ public class SuffixTreeLookupBuffer
             builder.append(Byte.toString(b));
         }
         return builder.toString();
+    }
+
+    /**
+     * For Test and Debug
+     * @return
+     */
+    int getLeafCounter() {
+        return leafCounter;
     }
 }

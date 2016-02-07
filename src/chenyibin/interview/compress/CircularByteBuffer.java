@@ -3,7 +3,6 @@ package chenyibin.interview.compress;
 import java.util.NoSuchElementException;
 
 /**
- * 
  * @author Yibin Chen
  */
 public class CircularByteBuffer
@@ -14,7 +13,7 @@ public class CircularByteBuffer
     private int end;
     private int start;
     private int size;
-    
+
     public CircularByteBuffer(int bufferSize)
     {
         this.elements = new byte[bufferSize];
@@ -22,7 +21,7 @@ public class CircularByteBuffer
         this.start = 0;
         this.size = 0;
     }
-    
+
     /**
      * Add a new byte to the buffer.
      * @param newByte
@@ -43,7 +42,7 @@ public class CircularByteBuffer
         }
         return removed;
     }
-    
+
     public byte remove()
     {
         if (isEmpty()) {
@@ -56,26 +55,33 @@ public class CircularByteBuffer
         }
         return result;
     }
-    
+
+    public void removeElements(int i)
+    {
+        if (i > this.size) {
+            throw new RuntimeException("not enough elements to remove");
+        }
+        this.start += this.size;
+        if (this.start >= this.elements.length) {
+            this.start -= this.elements.length;
+        }
+    }
+
     public boolean isEmpty()
     {
         return this.size == 0;
     }
-    
+
     public boolean isFull()
     {
-        return this.size == this.elements.length;
+        return this.size == getCapacity();
     }
-    
-    public byte[] getElements() {
-        return this.elements;
-    }
-    
+
     public int getEnd()
     {
         return this.end;
     }
-    
+
     public int getStart()
     {
         return this.start;
@@ -90,7 +96,12 @@ public class CircularByteBuffer
     {
         return this.elements.length;
     }
-    
+
+    public byte[] getElements()
+    {
+        return this.elements;
+    }
+
     public boolean inBuffer(int index)
     {
         if (isEmpty()) {

@@ -1,22 +1,24 @@
-package chenyibin.interview.compress;
+package chenyibin.interview.lookup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
+
+import chenyibin.interview.compress.CircularByteBuffer;
 
 /**
  * @author Yibin Chen
  */
-public class HashLookupBuffer extends LookupBuffer
+public class HashLookupBuffer implements LookupBuffer
 {
     private final int NO_PREV = -1;
     
-    Map<Integer,Set<Integer>> lookup;
-    int prevByte;
+    private CircularByteBuffer byteBuffer;
+    private Map<Integer,Set<Integer>> lookup;
+    private int prevByte;
     
     public HashLookupBuffer()
     {
@@ -25,10 +27,12 @@ public class HashLookupBuffer extends LookupBuffer
         this.prevByte = NO_PREV;
     }
     
-    public void addByte(byte newByte)
+    @Override
+    public void appendByte(byte newByte)
     {
         int removed = this.byteBuffer.addByte(newByte);
-        if (removed != CircularByteBuffer.NO_REMOVE) {
+        if (removed == CircularByteBuffer.NO_REMOVE) {
+            return;
         }
         
         if (this.prevByte != NO_PREV)
@@ -48,11 +52,17 @@ public class HashLookupBuffer extends LookupBuffer
         }
         this.prevByte = newByte;
     }
-    
+
     @Override
-    public Optional<int[]> lookup(CircularByteBuffer lookup)
-    {
-        return Optional.empty();
+    public int[] findLongestMatch(byte[] lookup) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int[] findLongestMatch(byte[] lookup, int start, int length) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
