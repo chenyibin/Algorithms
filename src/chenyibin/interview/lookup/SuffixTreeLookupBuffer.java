@@ -409,6 +409,9 @@ public class SuffixTreeLookupBuffer implements LookupBuffer
 
     private boolean activeWalkDown(SuffixNode activeNext)
     {
+        if (activeNext == null) {
+            return false;
+        }
         if (activeNext.endPosition == INFINITY) {
             return false;
         }
