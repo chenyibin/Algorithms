@@ -45,20 +45,17 @@ public class ThreeSum
                 int leftNum = nums[left];
                 int rightNum = nums[right];
                 int leftAndRight = leftNum + rightNum;
-                if (leftAndRight == targetTwoSum)
-                {
-                    result.add(Arrays.asList(firstNum, leftNum, rightNum));
-                    while (left < right && leftNum == nums[++left]);
-                    while (left < right && rightNum == nums[--right]);
-                }
-                else if (leftAndRight < targetTwoSum)
-                {
+                if (leftAndRight < targetTwoSum) {
                     ++left;
+                    continue;
                 }
-                else
-                {
+                if (leftAndRight > targetTwoSum) {
                     --right;
+                    continue;
                 }
+                result.add(Arrays.asList(firstNum, leftNum, rightNum));
+                while (left < right && leftNum == nums[++left]);
+                while (left < right && rightNum == nums[--right]);
             }
             
         }
