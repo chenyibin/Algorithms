@@ -48,7 +48,7 @@ public class Compressor
         this.lookupBuffer = new SuffixTreeLookupBuffer(lookupBufferSize);
     }
 
-    public void createCompressedFile() throws IOException
+    public void writeToOutput() throws IOException
     {
         int inputByte = inputStream.read();
         while (inputByte != -1)
@@ -65,6 +65,7 @@ public class Compressor
             writeFromReadBuffer();
         }
         binaryOutput.flushAndClose();
+        inputStream.close();
     }
 
     private void writeFromReadBuffer() throws IOException
