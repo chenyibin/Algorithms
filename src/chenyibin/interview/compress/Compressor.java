@@ -8,14 +8,13 @@ import chenyibin.interview.lookup.LookupBuffer;
 import chenyibin.interview.lookup.SuffixTreeLookupBuffer;
 
 /**
- *
  * @author Yibin Chen
  */
 public class Compressor
 {
-    private static final int MAX_REPLACE_LENGTH = 66;
+    static final int MAX_REPLACE_LENGTH = 66;
     // 16-bit maximum offset = (2^16 - 1) = 65535
-    private static final int LOOKUP_BUFFER_SIZE = 65535;
+    static final int LOOKUP_BUFFER_SIZE = 65535;
 
     private InputStream inputStream;
 
@@ -26,11 +25,27 @@ public class Compressor
 
     public Compressor(InputStream inputStream, OutputStream compressedStream)
     {
+        this(inputStream, compressedStream, MAX_REPLACE_LENGTH, LOOKUP_BUFFER_SIZE);
+    }
+
+    Compressor(InputStream inputStream, OutputStream compressedStream,
+        CircularByteBuffer readBuffer, LookupBuffer lookupBuffer)
+    {
         this.inputStream = inputStream;
         this.binaryOutput = new BinaryOutput(compressedStream);
 
-        this.readBuffer = new CircularByteBuffer(MAX_REPLACE_LENGTH);
-        this.lookupBuffer = new SuffixTreeLookupBuffer(LOOKUP_BUFFER_SIZE);
+        this.readBuffer = readBuffer;
+        this.lookupBuffer = lookupBuffer;
+    }
+
+    Compressor(InputStream inputStream, OutputStream compressedStream,
+        int readBufferSize, int lookupBufferSize)
+    {
+        this.inputStream = inputStream;
+        this.binaryOutput = new BinaryOutput(compressedStream);
+
+        this.readBuffer = new CircularByteBuffer(readBufferSize);
+        this.lookupBuffer = new SuffixTreeLookupBuffer(lookupBufferSize);
     }
 
     public void createCompressedFile() throws IOException

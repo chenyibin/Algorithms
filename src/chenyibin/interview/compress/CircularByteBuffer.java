@@ -56,15 +56,16 @@ public class CircularByteBuffer
         return result;
     }
 
-    public void removeElements(int i)
+    public void removeElements(int numRemove)
     {
-        if (i > this.size) {
+        if (numRemove > this.size) {
             throw new RuntimeException("not enough elements to remove");
         }
         this.start += this.size;
         if (this.start >= this.elements.length) {
             this.start -= this.elements.length;
         }
+        this.size -= numRemove;
     }
 
     public boolean isEmpty()
@@ -100,6 +101,15 @@ public class CircularByteBuffer
     public byte[] getElements()
     {
         return this.elements;
+    }
+
+    public byte getElement(int index)
+    {
+        int effectiveIndex = index % elements.length;
+        if (!inBuffer(effectiveIndex)) {
+            throw new NoSuchElementException();
+        }
+        return this.elements[effectiveIndex];
     }
 
     public boolean inBuffer(int index)
